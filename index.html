@@ -185,17 +185,17 @@
 
     function __(k) { return t[currentLang][k] || k; }
     function getCatName(c) { const cat = categories.find(x => x.id === c); return cat ? (cat.name[currentLang] || cat.name.id) : c; }
-
+    
     function timeAgo(d) {
       const date = new Date(d), now = new Date();
-      const diff = Math.floor((now - date) / 60000);
-      if (diff < 1) return currentLang === 'id' ? 'Baru' : 'Now';
-      if (diff < 60) return diff + 'm ' + __('ago');
-      const h = Math.floor(diff / 60);
-      if (h < 24) return h + 'h ' + __('ago');
+      const sec = Math.floor((now - date) / 1000);
+      if (sec < 60) return sec + 'd'; // detik
+      const min = Math.floor(sec / 60);
+      if (min < 60) return min + 'm';
+      const h = Math.floor(min / 60);
+      if (h < 24) return h + 'j';
       const days = Math.floor(h / 24);
-      if (days < 7) return days + 'd ' + __('ago');
-      return date.toLocaleDateString(currentLang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short' });
+      return days + 'h';
     }
 
     function showToast(msg, icon = '✅') {
@@ -358,6 +358,15 @@
     function refreshNews() { const btn = document.getElementById('refreshBtn'); btn.classList.add('spinning'); const c = categories.find(x => x.id === currentCategory); fetchNews(c.query || 'general').then(() => setTimeout(() => btn.classList.remove('spinning'), 500)); }
 
     fetchNews('general');
+    
+    // Auto-refresh setiap 3 menit
+    setInterval(() => {
+      if (!document.hidden && !showingBookmarks && !searchQuery) {
+        const c = categories.find(x => x.id === currentCategory);
+        fetchNews(c.query || 'general');
+      }
+    }, 180000); // 3 menit
+        
   </script>
 </body>
 </html>
