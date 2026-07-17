@@ -161,11 +161,10 @@
   <div class="toast" id="toast"><span id="toastIcon">✅</span><span id="toastText"></span></div>
 
   <script>
-    const API_KEY = '364a229bdab94caab01546becc9b3d66';
-    const API_BASE = 'https://newsapi.org/v2';
+    const API_BASE = '/api/news';
 
     const categories = [
-      { id: 'all', name: { id: 'Semua', en: 'All' }, query: null },
+      { id: 'all', name: { id: 'Semua', en: 'All' }, query: 'top' },
       { id: 'tech', name: { id: 'Tekno', en: 'Tech' }, query: 'technology' },
       { id: 'business', name: { id: 'Bisnis', en: 'Business' }, query: 'business' },
       { id: 'sports', name: { id: 'Olahraga', en: 'Sports' }, query: 'sports' },
@@ -206,7 +205,7 @@
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
-    async function fetchNews(cat = 'general', q = null) {
+    async function fetchNews(cat = 'general', q = query: 'top') {
       isLoading = true;
       document.getElementById('loadingGrid').innerHTML = Array(6).fill(0).map(() =>
         `<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line medium"></div><div class="skeleton-line long"></div></div></div>`
@@ -216,32 +215,66 @@
       document.getElementById('emptyState').style.display = 'none';
 
       try {
-        const url = q
-          ? `${API_BASE}/everything?q=${encodeURIComponent(q)}&language=${currentLang === 'id' ? 'id' : 'en'}&sortBy=publishedAt&pageSize=20&apiKey=${API_KEY}`
-          : `${API_BASE}/top-headlines?category=${cat}&language=${currentLang === 'id' ? 'id' : 'en'}&pageSize=20&apiKey=${API_KEY}`;
-
-        const res = await fetch(url, { method: 'GET', mode: 'cors' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
+        let url = `${API_BASE}?language=${currentLang}`;
+        
+        if (q) {
+            url += `&q=${encodeURIComponent(q)}`;
+        } else {
+            url += `&category=${cat}`;
+        }
+        
+        const res = await fetch(url);
+        
+        if (!res.ok) {
+            throw new Error("HTTP " + res.status);
+        }
+        
         const data = await res.json();
 
-        if (data.status === 'ok' && data.articles?.length > 0) {
-          allArticles = data.articles.map((a, i) => ({
-            id: 'api_' + i + '_' + Date.now(),
-            title: a.title || 'Untitled',
-            excerpt: a.description || 'No description.',
-            category: cat,
-            image: a.urlToImage || getFallback(cat, i),
-            source: a.source?.name || 'Unknown',
-            date: a.publishedAt,
-            url: a.url,
-            readTime: Math.max(1, Math.ceil((a.description || '').split(/\s+/).length / 200))
+        if (data.status === "success" && data.results?.length > 0) {
+          allArticles = data.results.map((a, i) => ({
+            id: a.article_id || ('api_' + i),
+        
+            title: a.title || "Untitled",
+        
+            excerpt:
+                a.description ||
+                a.content ||
+                "Tidak ada deskripsi.",
+        
+            category:
+                a.category?.[0] ||
+                cat,
+        
+            image:
+                a.image_url ||
+                getFallback(cat, i),
+        
+            source:
+                a.source_name ||
+                "Unknown",
+        
+            date:
+                a.pubDate,
+        
+            url:
+                a.link,
+        
+            readTime:
+                Math.max(
+                    1,
+                    Math.ceil(
+                        (a.description || "")
+                            .split(/\s+/).length / 200
+                    )
+                )
           }));
           showToast(__('refreshSuccess'), '📡');
         } else throw new Error('No articles');
       } catch (err) {
         console.warn('API failed:', err.message);
         showToast(__('refreshError'), '⚠️');
-        generateDemo(cat);
+        allArticles = [];
       }
       isLoading = false;
       renderAll();
@@ -260,7 +293,7 @@
       return imgs[cat] || imgs.general;
     }
 
-    function generateDemo(cat) {
+    function allArticles = []; {
       const titles = {
         technology: ['Apple Rilis Chip M5 AI 3x Lebih Cepat','Tesla Umumkan Robot Humanoid','OpenAI Luncurkan GPT-5 Multimodal','Indonesia Bangun Pusat Data AI Terbesar SEA','Samsung Layar Lipat Baterai 7 Hari'],
         business: ['BI Tahan Suku Bunga 5,5%','Startup Fintech Indonesia IPO Nasdaq','Ekspor Kopi Nusantara $5 Miliar','Shopee Tokopedia Merger Disetujui','IHSG Tembus 8.000'],
