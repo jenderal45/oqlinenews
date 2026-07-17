@@ -1,0 +1,11 @@
+{
+  "name": "oqline-news",
+  "version": "1.0.0",
+  "description": "OQLine News Aggregator - Berita Real-Time",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
