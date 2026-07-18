@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OQLine News</title>
+  <title>Oqline News</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -145,8 +145,8 @@
   </main>
 
   <footer class="footer">
-    <div class="footer-brand"><div class="logo-mark">OQ</div><span>OQLine News</span></div>
-    <p>© 2026 OQLine Corporation. Ekosistem Digital Terintegrasi.</p>
+    <div class="footer-brand"><div class="logo-mark">OQ</div><span>Oqline News</span></div>
+    <p>© 2026 OQLine Corporation.</p>
   </footer>
 
   <div class="toast" id="toast"><span id="toastIcon">✅</span><span id="toastText"></span></div>
@@ -427,16 +427,4 @@
     }, 180000);
   </script>
 </body>
-</html>'''
-
-with open('/mnt/agents/output/index.html', 'w', encoding='utf-8') as f:
-    f.write(fixed_html)
-
-print("✅ index.html sudah diperbaiki dan disimpan!")
-print("\n📁 File tersimpan di: /mnt/agents/output/index.html")
-print("\n🔧 Bug yang diperbaiki:")
-print("   1. Syntax error: q = query: 'top' → dihapus")
-print("   2. function allArticles = []; → diperbaiki jadi function generateDemo(cat)")
-print("   3. Arrow functions → diubah ke function biasa untuk kompatibilitas")
-print("   4. API endpoint konsisten dengan newsdata.io format")
-print("   5. Tambahan error handling yang lebih baik")
+</html>
