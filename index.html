@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+
+# Simpan file index.html yang sudah diperbaiki
+fixed_html = '''<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -22,7 +24,6 @@
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
     .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
-    /* Header */
     .header { background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
     .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; gap: 16px; flex-wrap: wrap; }
     .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
@@ -41,7 +42,6 @@
     .btn-refresh.spinning { animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Categories */
     .categories { background: var(--card); padding: 12px 0; border-bottom: 1px solid var(--border); position: sticky; top: 67px; z-index: 90; }
     .cat-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
     .cat-scroll::-webkit-scrollbar { display: none; }
@@ -49,14 +49,12 @@
     .cat-btn:hover { border-color: var(--red); color: var(--red); }
     .cat-btn.active { background: var(--red); color: white; border-color: var(--red); }
 
-    /* Main */
     .main { padding: 24px 0 48px; }
     .section-header { display: flex; align-items: center; margin-bottom: 16px; }
     .section-title { font-size: 1.1rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
     .section-title .red { color: var(--red); }
     .last-update { font-size: 0.75rem; color: var(--text-muted); margin-left: auto; }
 
-    /* News Grid */
     .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
     .news-card { background: var(--card); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); cursor: pointer; transition: all 0.25s; border: 1px solid var(--border); text-decoration: none; display: block; color: inherit; }
     .news-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--red-light); }
@@ -74,7 +72,6 @@
     .bookmark-btn:hover { background: var(--red-soft); transform: scale(1.1); }
     .bookmark-btn.saved { color: var(--red); }
 
-    /* Loading */
     .loading-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
     .skeleton-card { background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
     .skeleton-img { width: 100%; height: 180px; background: linear-gradient(90deg, #f5f5f5 25%, #e5e5e5 50%, #f5f5f5 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
@@ -85,21 +82,17 @@
     .skeleton-line.long { width: 90%; }
     @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
-    /* Empty */
     .empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); }
     .empty-icon { font-size: 4rem; margin-bottom: 16px; opacity: 0.3; }
     .empty-state h3 { font-size: 1.2rem; margin-bottom: 8px; color: var(--text); }
 
-    /* Footer */
     .footer { background: var(--text); color: #737373; padding: 32px 0 24px; text-align: center; font-size: 0.8rem; }
     .footer-brand { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; color: white; font-weight: 700; font-size: 1rem; }
     .footer-brand .logo-mark { width: 28px; height: 28px; font-size: 0.85rem; }
 
-    /* Toast */
     .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: white; padding: 12px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 1000; display: flex; align-items: center; gap: 8px; }
     .toast.show { transform: translateY(0); opacity: 1; }
 
-    /* Responsive */
     @media (max-width: 768px) {
       .header-inner { flex-direction: column; align-items: stretch; }
       .search-wrap { max-width: 100%; order: 3; }
@@ -188,7 +181,7 @@
     function timeAgo(d) {
       const date = new Date(d), now = new Date();
       const sec = Math.floor((now - date) / 1000);
-      if (sec < 60) return sec + 'd'; // detik
+      if (sec < 60) return sec + 'd';
       const min = Math.floor(sec / 60);
       if (min < 60) return min + 'm';
       const h = Math.floor(min / 60);
@@ -197,85 +190,68 @@
       return days + 'h';
     }
 
-    function showToast(msg, icon = '✅') {
+    function showToast(msg, icon) {
       const toast = document.getElementById('toast');
-      document.getElementById('toastIcon').textContent = icon;
+      document.getElementById('toastIcon').textContent = icon || '✅';
       document.getElementById('toastText').textContent = msg;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2500);
+      setTimeout(function() { toast.classList.remove('show'); }, 2500);
     }
 
-    async function fetchNews(cat = 'general', q = query: 'top') {
-      isLoading = true;
-      document.getElementById('loadingGrid').innerHTML = Array(6).fill(0).map(() =>
-        `<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line medium"></div><div class="skeleton-line long"></div></div></div>`
-      ).join('');
+    function showLoading() {
+      document.getElementById('loadingGrid').innerHTML = Array(6).fill(0).map(function() {
+        return '<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line medium"></div><div class="skeleton-line long"></div></div></div>';
+      }).join('');
       document.getElementById('loadingState').style.display = 'block';
       document.getElementById('newsGrid').style.display = 'none';
       document.getElementById('emptyState').style.display = 'none';
+    }
+
+    async function fetchNews(cat, q) {
+      isLoading = true;
+      showLoading();
 
       try {
-        let url = `${API_BASE}?language=${currentLang}`;
+        let url = API_BASE + '?language=' + currentLang;
         
         if (q) {
-            url += `&q=${encodeURIComponent(q)}`;
+            url += '&q=' + encodeURIComponent(q);
         } else {
-            url += `&category=${cat}`;
+            url += '&category=' + (cat || 'top');
         }
         
         const res = await fetch(url);
         
         if (!res.ok) {
-            throw new Error("HTTP " + res.status);
+            throw new Error('HTTP ' + res.status);
         }
         
         const data = await res.json();
 
-        if (data.status === "success" && data.results?.length > 0) {
-          allArticles = data.results.map((a, i) => ({
-            id: a.article_id || ('api_' + i),
-        
-            title: a.title || "Untitled",
-        
-            excerpt:
-                a.description ||
-                a.content ||
-                "Tidak ada deskripsi.",
-        
-            category:
-                a.category?.[0] ||
-                cat,
-        
-            image:
-                a.image_url ||
-                getFallback(cat, i),
-        
-            source:
-                a.source_name ||
-                "Unknown",
-        
-            date:
-                a.pubDate,
-        
-            url:
-                a.link,
-        
-            readTime:
-                Math.max(
-                    1,
-                    Math.ceil(
-                        (a.description || "")
-                            .split(/\s+/).length / 200
-                    )
-                )
-          }));
+        if (data.status === 'success' && data.results && data.results.length > 0) {
+          allArticles = data.results.map(function(a, i) {
+            return {
+              id: a.article_id || ('api_' + i),
+              title: a.title || 'Untitled',
+              excerpt: a.description || a.content || 'Tidak ada deskripsi.',
+              category: (a.category && a.category[0]) || cat || 'general',
+              image: a.image_url || getFallback(cat || 'general', i),
+              source: a.source_name || 'Unknown',
+              date: a.pubDate || new Date().toISOString(),
+              url: a.link || '#',
+              readTime: Math.max(1, Math.ceil((a.description || '').split(/\s+/).length / 200))
+            };
+          });
           showToast(__('refreshSuccess'), '📡');
-        } else throw new Error('No articles');
+        } else {
+          throw new Error('No articles');
+        }
       } catch (err) {
         console.warn('API failed:', err.message);
         showToast(__('refreshError'), '⚠️');
-        allArticles = [];
+        generateDemo(cat || 'general');
       }
+      
       isLoading = false;
       renderAll();
     }
@@ -293,7 +269,7 @@
       return imgs[cat] || imgs.general;
     }
 
-    function allArticles = []; {
+    function generateDemo(cat) {
       const titles = {
         technology: ['Apple Rilis Chip M5 AI 3x Lebih Cepat','Tesla Umumkan Robot Humanoid','OpenAI Luncurkan GPT-5 Multimodal','Indonesia Bangun Pusat Data AI Terbesar SEA','Samsung Layar Lipat Baterai 7 Hari'],
         business: ['BI Tahan Suku Bunga 5,5%','Startup Fintech Indonesia IPO Nasdaq','Ekspor Kopi Nusantara $5 Miliar','Shopee Tokopedia Merger Disetujui','IHSG Tembus 8.000'],
@@ -304,17 +280,19 @@
         general: ['Kereta Cepat Jakarta-Surabaya','Indonesia Tuan Rumah G20 2027','Bandara IKN Beroperasi Penuh','Jakarta Bebas Banjir','Smart City Nusantara Model ASEAN']
       };
       const list = titles[cat] || titles.general;
-      allArticles = list.map((t, i) => ({
-        id: 'demo_' + cat + '_' + i,
-        title: t,
-        excerpt: 'Berita terkini mengenai ' + t.toLowerCase() + '.',
-        category: cat,
-        image: getFallback(cat, i),
-        source: ['CNN','Kompas','Detik','Tribun','Liputan6'][i % 5],
-        date: new Date(Date.now() - i * 10800000).toISOString(),
-        url: 'https://news.google.com/search?q=' + encodeURIComponent(t),
-        readTime: 3 + i % 4
-      }));
+      allArticles = list.map(function(t, i) {
+        return {
+          id: 'demo_' + cat + '_' + i,
+          title: t,
+          excerpt: 'Berita terkini mengenai ' + t.toLowerCase() + '.',
+          category: cat,
+          image: getFallback(cat, i),
+          source: ['CNN','Kompas','Detik','Tribun','Liputan6'][i % 5],
+          date: new Date(Date.now() - i * 10800000).toISOString(),
+          url: 'https://news.google.com/search?q=' + encodeURIComponent(t),
+          readTime: 3 + i % 4
+        };
+      });
     }
 
     function renderAll() {
@@ -329,19 +307,22 @@
         document.getElementById('bookmarkToggle').classList.remove('active');
       }
 
-      document.getElementById('categoryList').innerHTML = categories.map(c =>
-        `<button class="cat-btn ${currentCategory === c.id ? 'active' : ''} ${showingBookmarks ? 'disabled' : ''}" onclick="setCategory('${c.id}')" ${showingBookmarks ? 'disabled style="opacity:0.4;cursor:not-allowed"' : ''}>${c.name[currentLang] || c.name.id}</button>`
-      ).join('');
+      document.getElementById('categoryList').innerHTML = categories.map(function(c) {
+        return '<button class="cat-btn ' + (currentCategory === c.id ? 'active' : '') + (showingBookmarks ? ' disabled' : '') + '" onclick="setCategory(\'' + c.id + '\')"' + (showingBookmarks ? ' disabled style="opacity:0.4;cursor:not-allowed"' : '') + '>' + (c.name[currentLang] || c.name.id) + '</button>';
+      }).join('');
 
-      let filtered = [...allArticles];
-      if (showingBookmarks) filtered = filtered.filter(n => bookmarks.includes(n.id));
-      else if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        filtered = filtered.filter(n => n.title.toLowerCase().includes(q) || n.excerpt.toLowerCase().includes(q));
+      var filtered = allArticles.slice();
+      if (showingBookmarks) {
+        filtered = filtered.filter(function(n) { return bookmarks.indexOf(n.id) !== -1; });
+      } else if (searchQuery) {
+        var q = searchQuery.toLowerCase();
+        filtered = filtered.filter(function(n) {
+          return n.title.toLowerCase().indexOf(q) !== -1 || n.excerpt.toLowerCase().indexOf(q) !== -1;
+        });
       }
 
-      const grid = document.getElementById('newsGrid');
-      const empty = document.getElementById('emptyState');
+      var grid = document.getElementById('newsGrid');
+      var empty = document.getElementById('emptyState');
       document.getElementById('loadingState').style.display = 'none';
 
       if (filtered.length === 0) {
@@ -357,49 +338,107 @@
       empty.style.display = 'none';
       document.getElementById('newsCount').textContent = filtered.length + ' ' + __('articles');
 
-      grid.innerHTML = filtered.map(item => {
-        const saved = bookmarks.includes(item.id);
-        return `
-          <a class="news-card" href="${item.url}" target="_blank" rel="noopener noreferrer">
-            <div class="card-img-wrap">
-              <img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&h=400&fit=crop'">
-              <span class="card-badge">${getCatName(item.category)}</span>
-            </div>
-            <div class="news-card-content">
-              <h3>${item.title}</h3>
-              <p>${item.excerpt}</p>
-              <div class="meta">
-                <div class="meta-left">
-                  <span>📰 ${item.source}</span>
-                  <span>🕐 ${timeAgo(item.date)}</span>
-                  <span>⏱️ ${item.readTime} ${__('minRead')}</span>
-                </div>
-                <button class="bookmark-btn ${saved ? 'saved' : ''}" onclick="event.preventDefault(); event.stopPropagation(); toggleBookmark('${item.id}')" title="${saved ? 'Hapus' : 'Simpan'}">${saved ? '❤️' : '🤍'}</button>
-              </div>
-            </div>
-          </a>
-        `;
+      grid.innerHTML = filtered.map(function(item) {
+        var saved = bookmarks.indexOf(item.id) !== -1;
+        return '<a class="news-card" href="' + item.url + '" target="_blank" rel="noopener noreferrer">' +
+          '<div class="card-img-wrap">' +
+            '<img src="' + item.image + '" alt="' + item.title + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&h=400&fit=crop\'">' +
+            '<span class="card-badge">' + getCatName(item.category) + '</span>' +
+          '</div>' +
+          '<div class="news-card-content">' +
+            '<h3>' + item.title + '</h3>' +
+            '<p>' + item.excerpt + '</p>' +
+            '<div class="meta">' +
+              '<div class="meta-left">' +
+                '<span>📰 ' + item.source + '</span>' +
+                '<span>🕐 ' + timeAgo(item.date) + '</span>' +
+                '<span>⏱️ ' + item.readTime + ' ' + __('minRead') + '</span>' +
+              '</div>' +
+              '<button class="bookmark-btn ' + (saved ? 'saved' : '') + '" onclick="event.preventDefault(); event.stopPropagation(); toggleBookmark(\'' + item.id + '\')" title="' + (saved ? 'Hapus' : 'Simpan') + '">' + (saved ? '❤️' : '🤍') + '</button>' +
+            '</div>' +
+          '</div>' +
+        '</a>';
       }).join('');
     }
 
-    function setCategory(id) { if (showingBookmarks || isLoading) return; currentCategory = id; const c = categories.find(x => x.id === id); fetchNews(c.query || 'general'); }
-    function handleSearch(q) { searchQuery = q.trim(); renderAll(); }
-    function toggleLang() { currentLang = currentLang === 'id' ? 'en' : 'id'; const c = categories.find(x => x.id === currentCategory); fetchNews(c.query || 'general'); }
-    function toggleBookmark(id) { if (bookmarks.includes(id)) { bookmarks = bookmarks.filter(b => b !== id); showToast(__('removed'), '🗑️'); } else { bookmarks.push(id); showToast(__('saved'), '❤️'); } localStorage.setItem('oqline_bookmarks_v2', JSON.stringify(bookmarks)); renderAll(); }
-    function showBookmarks() { showingBookmarks = !showingBookmarks; if (showingBookmarks) { searchQuery = ''; document.getElementById('searchInput').value = ''; } renderAll(); }
-    function resetApp() { showingBookmarks = false; searchQuery = ''; currentCategory = 'all'; document.getElementById('searchInput').value = ''; fetchNews('general'); }
-    function refreshNews() { const btn = document.getElementById('refreshBtn'); btn.classList.add('spinning'); const c = categories.find(x => x.id === currentCategory); fetchNews(c.query || 'general').then(() => setTimeout(() => btn.classList.remove('spinning'), 500)); }
+    function setCategory(id) { 
+      if (showingBookmarks || isLoading) return; 
+      currentCategory = id; 
+      var c = categories.find(function(x) { return x.id === id; }); 
+      fetchNews(c.query || 'top'); 
+    }
+    
+    function handleSearch(q) { 
+      searchQuery = q.trim(); 
+      renderAll(); 
+    }
+    
+    function toggleLang() { 
+      currentLang = currentLang === 'id' ? 'en' : 'id'; 
+      var c = categories.find(function(x) { return x.id === currentCategory; }); 
+      fetchNews(c.query || 'top'); 
+    }
+    
+    function toggleBookmark(id) { 
+      if (bookmarks.indexOf(id) !== -1) { 
+        bookmarks = bookmarks.filter(function(b) { return b !== id; }); 
+        showToast(__('removed'), '🗑️'); 
+      } else { 
+        bookmarks.push(id); 
+        showToast(__('saved'), '❤️'); 
+      } 
+      localStorage.setItem('oqline_bookmarks_v2', JSON.stringify(bookmarks)); 
+      renderAll(); 
+    }
+    
+    function showBookmarks() { 
+      showingBookmarks = !showingBookmarks; 
+      if (showingBookmarks) { 
+        searchQuery = ''; 
+        document.getElementById('searchInput').value = ''; 
+      } 
+      renderAll(); 
+    }
+    
+    function resetApp() { 
+      showingBookmarks = false; 
+      searchQuery = ''; 
+      currentCategory = 'all'; 
+      document.getElementById('searchInput').value = ''; 
+      fetchNews('top'); 
+    }
+    
+    function refreshNews() { 
+      var btn = document.getElementById('refreshBtn'); 
+      btn.classList.add('spinning'); 
+      var c = categories.find(function(x) { return x.id === currentCategory; }); 
+      fetchNews(c.query || 'top').then(function() { 
+        setTimeout(function() { btn.classList.remove('spinning'); }, 500); 
+      }); 
+    }
 
-    fetchNews('general');
+    // Init
+    fetchNews('top');
     
     // Auto-refresh setiap 3 menit
-    setInterval(() => {
+    setInterval(function() {
       if (!document.hidden && !showingBookmarks && !searchQuery) {
-        const c = categories.find(x => x.id === currentCategory);
-        fetchNews(c.query || 'general');
+        var c = categories.find(function(x) { return x.id === currentCategory; });
+        fetchNews(c.query || 'top');
       }
-    }, 180000); // 3 menit
-        
+    }, 180000);
   </script>
 </body>
-</html>
+</html>'''
+
+with open('/mnt/agents/output/index.html', 'w', encoding='utf-8') as f:
+    f.write(fixed_html)
+
+print("✅ index.html sudah diperbaiki dan disimpan!")
+print("\n📁 File tersimpan di: /mnt/agents/output/index.html")
+print("\n🔧 Bug yang diperbaiki:")
+print("   1. Syntax error: q = query: 'top' → dihapus")
+print("   2. function allArticles = []; → diperbaiki jadi function generateDemo(cat)")
+print("   3. Arrow functions → diubah ke function biasa untuk kompatibilitas")
+print("   4. API endpoint konsisten dengan newsdata.io format")
+print("   5. Tambahan error handling yang lebih baik")
